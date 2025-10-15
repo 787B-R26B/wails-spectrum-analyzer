@@ -18,6 +18,7 @@ const SpectrumPlayer: React.FC = () => {
   const [fftSize, setFftSize] = useState<(typeof FFT_OPTIONS)[number]>(1024);
   const [smoothing, setSmoothing] = useState(0.7);
   const [visMode, setVisMode] = useState<VisMode>("bars+wave");
+  const [loopTrack, setLoopTrach] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [eqGains, setEqGains] = useState<number[]>(() =>
     new Array(EQ_FREQUENCIES.length).fill(0),
@@ -77,6 +78,13 @@ const SpectrumPlayer: React.FC = () => {
     };
   }, []);
 
+  // <audio>.loop に反映
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.loop = loopTrack;
+  }, [loopTrack]);
+
   // ファイル選択：自動再生はしない（ポリシー回避）
   const onPick = (f: File, url: string) => {
     setErrMsg("");
@@ -87,6 +95,7 @@ const SpectrumPlayer: React.FC = () => {
     audioEl.preload = "auto";
     audioEl.currentTime = 0;
     audioEl.load();
+    setLoopTrach(false);
   };
 
   // 再生/一時停止
@@ -145,9 +154,11 @@ const SpectrumPlayer: React.FC = () => {
         currentTime={currentTime}
         duration={duration}
         volume={volume}
+        loopTrack={loopTrack}
         onTogglePlay={togglePlay}
         onSeek={onSeek}
         onVolume={setVolume}
+        onToggleLoopTrack={() => setLoopTrach(v => !v)}
       />
 
       {/* Visualizer */}
