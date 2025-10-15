@@ -28,7 +28,7 @@ export function Equalizer({
       >
         {/* Pre-gain slider */}
         <div className="flex flex-col items-center">
-          <span className="text-xs text-gray-400">Pre Gain</span>
+          <span className="text-xs text-gray-400 h-6">Pre Gain</span>
           <input
             type="range"
             min="0"
@@ -45,7 +45,7 @@ export function Equalizer({
         {/* EQ sliders */}
         {EQ_FREQUENCIES.map((freq, i) => (
           <div key={freq} className="flex flex-col items-center">
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-gray-400 h-6">
               {formatFrequency(freq)}
             </span>
             <input
