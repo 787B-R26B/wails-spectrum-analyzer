@@ -39,8 +39,25 @@ export function useAudioGraph(
     if (!audioEl) return;
 
     if (!GLOBAL_AUDIO_CTX) {
-      GLOBAL_AUDIO_CTX = new (window.AudioContext ||
-        (window as any).webkitAudioContext)();
+      const contextOptions: AudioContextOptions = {
+        sampleRate: 192000, // Aim for high quality
+        latencyHint: "playback",
+      };
+      try {
+        GLOBAL_AUDIO_CTX = new (window.AudioContext ||
+          (window as any).webkitAudioContext)(contextOptions);
+        console.log(
+          `AudioContext created with sample rate: ${GLOBAL_AUDIO_CTX.sampleRate}Hz`,
+        );
+      } catch (e) {
+        console.warn(
+          "Failed to create high-sample-rate AudioContext, falling back.",
+          e,
+        );
+        // Fallback to default if the preferred options fail
+        GLOBAL_AUDIO_CTX = new (window.AudioContext ||
+          (window as any).webkitAudioContext)();
+      }
     }
     audioCtxRef.current = GLOBAL_AUDIO_CTX;
 
