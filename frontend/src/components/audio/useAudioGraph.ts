@@ -18,13 +18,14 @@ export type GraphOptions = {
   volume: number;
   eqGains: number[];
   eqPreGain: number;
+  isEqEnabled: boolean;
 };
 
 export function useAudioGraph(
   audioRef: React.MutableRefObject<HTMLMediaElement | null>,
   opts: GraphOptions,
 ) {
-  const { fftSize, smoothing, volume, eqGains, eqPreGain } = opts;
+  const { fftSize, smoothing, volume, eqGains, eqPreGain, isEqEnabled } = opts;
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   const srcNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
@@ -113,14 +114,16 @@ export function useAudioGraph(
   }, [volume]);
 
   useEffect(() => {
-    if (preGainRef.current) preGainRef.current.gain.value = eqPreGain;
-  }, [eqPreGain]);
+    if (preGainRef.current) {
+      preGainRef.current.gain.value = isEqEnabled ? eqPreGain : 1;
+    }
+  }, [eqPreGain, isEqEnabled]);
 
   useEffect(() => {
     eqNodesRef.current.forEach((eq, i) => {
-      if (eq) eq.gain.value = eqGains[i] ?? 0;
+      if (eq) eq.gain.value = isEqEnabled ? (eqGains[i] ?? 0) : 0;
     });
-  }, [eqGains]);
+  }, [eqGains, isEqEnabled]);
 
   useEffect(() => {
     if (analyserRef.current) {

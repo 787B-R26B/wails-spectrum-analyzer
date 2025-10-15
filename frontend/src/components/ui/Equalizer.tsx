@@ -9,6 +9,8 @@ type EqualizerProps = {
   onGainChange: (index: number, value: number) => void;
   preGain: number;
   onPreGainChange: (value: number) => void;
+  isEnabled: boolean;
+  onEnabledChange: (value: boolean) => void;
 };
 
 export function Equalizer({
@@ -16,12 +18,30 @@ export function Equalizer({
   onGainChange,
   preGain,
   onPreGainChange,
+  isEnabled,
+  onEnabledChange,
 }: EqualizerProps) {
   return (
-    <div className="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
-      <h3 className="text-lg font-bold text-center mb-2">Graphic Equalizer</h3>
+    <div
+      className={`bg-gray-800 bg-opacity-50 p-4 rounded-lg transition-opacity ${
+        !isEnabled && "opacity-50"
+      }`}
+    >
+      <div className="flex justify-center items-center mb-2 relative">
+        <h3 className="text-lg font-bold text-center">Graphic Equalizer</h3>
+        <button
+          onClick={() => onEnabledChange(!isEnabled)}
+          className={`px-3 py-1 text-sm rounded-md absolute right-0 ${
+            isEnabled ? "bg-blue-600 text-white" : "bg-gray-600 text-gray-300"
+          }`}
+        >
+          {isEnabled ? "ON" : "OFF"}
+        </button>
+      </div>
       <div
-        className="grid gap-x-1 gap-y-4 justify-center"
+        className={`grid gap-x-1 gap-y-4 justify-center ${
+          !isEnabled && "pointer-events-none"
+        }`}
         style={{
           gridTemplateColumns: `repeat(${EQ_FREQUENCIES.length + 1}, minmax(0, 1fr))`,
         }}
