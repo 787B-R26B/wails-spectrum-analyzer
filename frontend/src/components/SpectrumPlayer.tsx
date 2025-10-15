@@ -128,7 +128,10 @@ const SpectrumPlayer: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <FilePicker onPick={onPick} />
+          <FilePicker
+            onPick={onPick}
+            accept="audio/mpeg,audio/wav,audio/aiff,audio/x-aiff"
+          />
           <div className="text-sm text-gray-600 truncate max-w-[32rem]">
             {fileName || "ファイル未選択"}
           </div>
