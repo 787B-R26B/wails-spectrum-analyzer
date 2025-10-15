@@ -7,15 +7,15 @@ const formatFrequency = (freq: number) => {
 type EqualizerProps = {
   gains: number[];
   onGainChange: (index: number, value: number) => void;
-  volume: number;
-  onVolumeChange: (value: number) => void;
+  preGain: number;
+  onPreGainChange: (value: number) => void;
 };
 
 export function Equalizer({
   gains,
   onGainChange,
-  volume,
-  onVolumeChange,
+  preGain,
+  onPreGainChange,
 }: EqualizerProps) {
   return (
     <div className="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
@@ -28,18 +28,18 @@ export function Equalizer({
       >
         {/* Pre-gain slider */}
         <div className="flex flex-col items-center">
-          <span className="text-xs text-gray-400">Gain</span>
+          <span className="text-xs text-gray-400">Pre Gain</span>
           <input
             type="range"
             min="0"
-            max="1.5"
+            max="2"
             step="0.05"
-            value={volume}
-            onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
+            value={preGain}
+            onChange={(e) => onPreGainChange(parseFloat(e.target.value))}
             className="w-5 h-32 appearance-none bg-transparent [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-black/25 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-green-500"
             style={{ writingMode: "vertical-lr", direction: "rtl" }}
           />
-          <span className="text-xs font-bold">{(volume * 100).toFixed(0)}</span>
+          <span className="text-xs font-bold">{preGain.toFixed(2)}x</span>
         </div>
 
         {/* EQ sliders */}

@@ -17,17 +17,19 @@ export type GraphOptions = {
   smoothing: number;
   volume: number;
   eqGains: number[];
+  eqPreGain: number;
 };
 
 export function useAudioGraph(
   audioRef: React.MutableRefObject<HTMLMediaElement | null>,
   opts: GraphOptions,
 ) {
-  const { fftSize, smoothing, volume, eqGains } = opts;
+  const { fftSize, smoothing, volume, eqGains, eqPreGain } = opts;
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   const srcNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
   const gainRef = useRef<GainNode | null>(null);
+  const preGainRef = useRef<GainNode | null>(null);
   const eqNodesRef = useRef<BiquadFilterNode[]>([]);
   const analyserRef = useRef<AnalyserNode | null>(null);
 
@@ -57,6 +59,11 @@ export function useAudioGraph(
       g.gain.value = volume;
       gainRef.current = g;
     }
+    if (!preGainRef.current) {
+      const g = GLOBAL_AUDIO_CTX.createGain();
+      g.gain.value = eqPreGain;
+      preGainRef.current = g;
+    }
 
     // EQ Nodes
     if (eqNodesRef.current.length === 0) {
@@ -84,6 +91,7 @@ export function useAudioGraph(
 
     const nodes: AudioNode[] = [
       gainRef.current!,
+      preGainRef.current!,
       ...eqNodesRef.current,
       analyserRef.current!,
       GLOBAL_AUDIO_CTX.destination,
@@ -97,12 +105,16 @@ export function useAudioGraph(
       } catch {}
       nodes[i].connect(nodes[i + 1]);
     }
-  }, [audioRef, fftSize, smoothing, volume, eqGains]);
+  }, [audioRef, fftSize, smoothing, volume, eqGains, eqPreGain]);
 
   // Update options
   useEffect(() => {
     if (gainRef.current) gainRef.current.gain.value = volume;
   }, [volume]);
+
+  useEffect(() => {
+    if (preGainRef.current) preGainRef.current.gain.value = eqPreGain;
+  }, [eqPreGain]);
 
   useEffect(() => {
     eqNodesRef.current.forEach((eq, i) => {
@@ -123,11 +135,13 @@ export function useAudioGraph(
       try {
         srcNodeRef.current?.disconnect();
         gainRef.current?.disconnect();
+        preGainRef.current?.disconnect();
         eqNodesRef.current.forEach((eq) => eq.disconnect());
         analyserRef.current?.disconnect();
       } catch {}
       srcNodeRef.current = null;
       gainRef.current = null;
+      preGainRef.current = null;
       eqNodesRef.current = [];
       analyserRef.current = null;
     };

@@ -22,12 +22,14 @@ const SpectrumPlayer: React.FC = () => {
   const [eqGains, setEqGains] = useState<number[]>(() =>
     new Array(EQ_FREQUENCIES.length).fill(0),
   );
+  const [eqPreGain, setEqPreGain] = useState(1);
 
   const { analyserRef, ensureGraph } = useAudioGraph(audioRef, {
     fftSize,
     smoothing,
     volume,
     eqGains,
+    eqPreGain,
   });
 
   // <audio> イベント
@@ -150,8 +152,8 @@ const SpectrumPlayer: React.FC = () => {
       <Equalizer
         gains={eqGains}
         onGainChange={handleGainChange}
-        volume={volume}
-        onVolumeChange={setVolume}
+        preGain={eqPreGain}
+        onPreGainChange={setEqPreGain}
       />
 
       {/* Controls Row */}
