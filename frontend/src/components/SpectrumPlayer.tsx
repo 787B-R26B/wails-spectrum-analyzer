@@ -130,6 +130,11 @@ const SpectrumPlayer: React.FC = () => {
     setEqGains(newGains);
   };
 
+  const handleResetAll = () => {
+    setEqPreGain(1);
+    setEqGains(new Array(EQ_FREQUENCIES.length).fill(0));
+  };
+
   const canPlay = !!(audioRef.current && audioRef.current.src);
 
   return (
@@ -158,7 +163,7 @@ const SpectrumPlayer: React.FC = () => {
         onTogglePlay={togglePlay}
         onSeek={onSeek}
         onVolume={setVolume}
-        onToggleLoopTrack={() => setLoopTrach(v => !v)}
+        onToggleLoopTrack={() => setLoopTrach((v) => !v)}
       />
 
       {/* Visualizer */}
@@ -172,6 +177,7 @@ const SpectrumPlayer: React.FC = () => {
         onPreGainChange={setEqPreGain}
         isEnabled={isEqEnabled}
         onEnabledChange={setIsEqEnabled}
+        onResetAll={handleResetAll}
       />
 
       {/* Controls Row */}
