@@ -11,6 +11,7 @@ type EqualizerProps = {
   onPreGainChange: (value: number) => void;
   isEnabled: boolean;
   onEnabledChange: (value: boolean) => void;
+  onResetAll: () => void;
 };
 
 export function Equalizer({
@@ -20,6 +21,7 @@ export function Equalizer({
   onPreGainChange,
   isEnabled,
   onEnabledChange,
+  onResetAll,
 }: EqualizerProps) {
   return (
     <div
@@ -27,11 +29,19 @@ export function Equalizer({
         !isEnabled && "opacity-50"
       }`}
     >
-      <div className="flex justify-center items-center mb-2 relative">
-        <h3 className="text-lg font-bold text-center">Graphic Equalizer</h3>
+      <div className="flex justify-between items-center mb-2 relative">
+        <button
+          onClick={onResetAll}
+          className="px-3 py-1 text-sm rounded-md bg-gray-600 text-gray-300"
+        >
+          Reset
+        </button>
+        <h3 className="text-lg font-bold text-center absolute left-1/2 -translate-x-1/2">
+          Graphic Equalizer
+        </h3>
         <button
           onClick={() => onEnabledChange(!isEnabled)}
-          className={`px-3 py-1 text-sm rounded-md absolute right-0 ${
+          className={`px-3 py-1 text-sm rounded-md ${
             isEnabled ? "bg-blue-600 text-white" : "bg-gray-600 text-gray-300"
           }`}
         >
@@ -56,6 +66,11 @@ export function Equalizer({
             step="0.05"
             value={preGain}
             onChange={(e) => onPreGainChange(parseFloat(e.target.value))}
+            onDoubleClick={() => onPreGainChange(1)}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              onPreGainChange(1);
+            }}
             className="w-5 h-32 appearance-none bg-transparent [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-black/25 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-green-500"
             style={{ writingMode: "vertical-lr", direction: "rtl" }}
           />
@@ -75,6 +90,11 @@ export function Equalizer({
               step="0.5"
               value={gains[i]}
               onChange={(e) => onGainChange(i, parseFloat(e.target.value))}
+              onDoubleClick={() => onGainChange(i, 0)}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                onGainChange(i, 0);
+              }}
               className="w-5 h-32 appearance-none bg-transparent [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-black/25 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-500"
               style={{ writingMode: "vertical-lr", direction: "rtl" }}
             />
